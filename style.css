@@ -1,0 +1,9 @@
+*{
+  margin: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+.container1{
+  width: 600px;
+  height: auto;
+}

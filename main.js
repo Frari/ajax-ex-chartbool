@@ -10,8 +10,8 @@
 
 $(document).ready(function(){
   var url_base = 'http://157.230.17.132:4017/sales';
-  var chiavi=[];
-  var valori=[];
+  // var chiavi=[];
+  // var valori=[];
 
   var mesi = {
     1:0,
@@ -41,45 +41,49 @@ $(document).ready(function(){
             mesi[prop_mese] += data[i].amount;
           }
         }
-        var keys_months = Object.keys(mesi);
-        var values = Object.values(mesi);
+
       }
-      chiavi.push(keys_months);
-      valori.push(values);
-      console.log(chiavi);
-      console.log(valori);
+      // create_graph(chiavi, valori);
+      // var keys_months = Object.keys(mesi);
+      // var values = Object.values(mesi);
+      // chiavi.push(keys_months);
+      // valori.push(values);
+      create_graph(Object.keys(mesi), Object.values(mesi));
     },
     'error':function(){
       alert(errore);
     }
   })
 
-  var ctx = document.getElementById('myChart').getContext('2d');
-  var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels:chiavi,
-        datasets: [{
-            label: '# of Votes',
-            data: valori,
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
-        }
-    }
-});
+  function create_graph(chiavi, valori){
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels:chiavi,
+          datasets: [{
+              label: 'Vendite totali mensili',
+              data: valori,
+              backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)'
+              ],
+              borderColor: [
+                  'rgba(255, 99, 132, 1)'
+              ],
+              borderWidth: 1
+          }]
+      },
+      options: {
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  }
+              }]
+          }
+      }
+  });
+  }
+
 
 });
