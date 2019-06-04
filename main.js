@@ -12,7 +12,8 @@ $(document).ready(function(){
   var url_base = 'http://157.230.17.132:4017/sales';
   // var chiavi=[];
   // var valori=[];
-
+// creo oggetto con all'inteno i mesi a 0 per poi dagli
+// la somma dei ricavi per ogni mese
   var mesi = {
     1:0,
     2:0,
@@ -27,15 +28,18 @@ $(document).ready(function(){
     11:0,
     12:0
   };
-
+// chiamata ajax per i ricavi mensili
   $.ajax({
     'url':url_base,
     'method':'GET',
     'success':function(data){
 
       for (var i = 0; i < data.length; i++) {
+// creo una variabile nella quale do il formato delle date utilizzando
+// monet e pendo solo i mesi delle varie date
         var mese = moment(data[i].date, 'DD/MM/YYYY').format('M');
-
+// ciclo for in con il quale sommo e assegno i profitti ai vari
+// mesi dell'oggetto 'mesi'.
         for(prop_mese in mesi){
           if(prop_mese == mese){
             mesi[prop_mese] += data[i].amount;
@@ -48,13 +52,14 @@ $(document).ready(function(){
       // var values = Object.values(mesi);
       // chiavi.push(keys_months);
       // valori.push(values);
+// richiamo la funzione con le chiavi e i valori come argomento
       create_graph(Object.keys(mesi), Object.values(mesi));
     },
     'error':function(){
       alert(errore);
     }
   })
-
+// funzione che mi disegna il grafico
   function create_graph(chiavi, valori){
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
@@ -84,6 +89,71 @@ $(document).ready(function(){
       }
   });
   }
+  var labels = [];
+  var data = [];
 
+  $.ajax({
+    'url':url_base,
+    'method':'GET',
+    'success':function(data){
+
+
+      for (var i = 0; i < data.length; i++) {
+        var venditori = data[i].salesman;
+        if(!labels.includes(venditori)){
+          labels.push(venditori);
+        }
+        // var guadagni = data[i].amount;
+      }
+      for (var i = 0; i < labels.length; i++) {
+        var venditore_corrente = labels[i];
+        var somma_prof_sing_vend = 0;
+
+       for (var j = 0; j < data.length; j++) {
+         var data_corrente = data[j];
+
+         if(data_corrente.salesman == venditore_corrente){
+           somma_prof_sing_vend += data_corrente.amount;
+         }
+       }
+       console.log(venditore_corrente +':'+somma_prof_sing_vend);
+       data.push(somma_prof_sing_vend);
+      }
+      console.log(data);
+    },
+    'error':function(){
+      alert(errore);
+    }
+  })
+
+//
+//   var ctx = document.getElementById('myChart').getContext('2d');
+//   var myChart = new Chart(ctx, {
+//     type: 'pie',
+//     data: {
+//         labels: labels,
+//         datasets: [{
+//             label: '# of Votes',
+//             data: data,
+//             backgroundColor: [
+//                 'red',
+//                 'yellow',
+//                 'blue',
+//                 'green'
+//             ],
+//
+//             borderWidth: 1
+//         }]
+//     },
+//     options: {
+//         scales: {
+//             yAxes: [{
+//                 ticks: {
+//                     beginAtZero: true
+//                 }
+//             }]
+//         }
+//     }
+// });
 
 });
