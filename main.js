@@ -10,24 +10,76 @@
 
 $(document).ready(function(){
   var url_base = 'http://157.230.17.132:4017/sales';
+  var chiavi=[];
+  var valori=[];
+
+  var mesi = {
+    1:0,
+    2:0,
+    3:0,
+    4:0,
+    5:0,
+    6:0,
+    7:0,
+    8:0,
+    9:0,
+    10:0,
+    11:0,
+    12:0
+  };
 
   $.ajax({
     'url':url_base,
     'method':'GET',
     'success':function(data){
 
-      var mesi = [01,02,03,04,05,06,07,08,09,10,11,12];
-
       for (var i = 0; i < data.length; i++) {
-        var mese = moment(data[i].date).format('MM');
-        console.log(mese);
+        var mese = moment(data[i].date, 'DD/MM/YYYY').format('M');
 
-        var guadagni = mesi[mese] += data.amount;
+        for(prop_mese in mesi){
+          if(prop_mese == mese){
+            mesi[prop_mese] += data[i].amount;
+          }
+        }
+        var keys_months = Object.keys(mesi);
+        var values = Object.values(mesi);
       }
-      console.log(mese);
+      chiavi.push(keys_months);
+      valori.push(values);
+      console.log(chiavi);
+      console.log(valori);
     },
     'error':function(){
       alert(errore);
     }
   })
+
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels:chiavi,
+        datasets: [{
+            label: '# of Votes',
+            data: valori,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+
 });
