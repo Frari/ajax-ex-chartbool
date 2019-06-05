@@ -90,12 +90,14 @@ $(document).ready(function(){
   });
   }
   var labels = [];
-  var data = [];
+  var array = [];
 
   $.ajax({
     'url':url_base,
     'method':'GET',
     'success':function(data){
+
+
 
 
       for (var i = 0; i < data.length; i++) {
@@ -105,6 +107,7 @@ $(document).ready(function(){
         }
         // var guadagni = data[i].amount;
       }
+
       for (var i = 0; i < labels.length; i++) {
         var venditore_corrente = labels[i];
         var somma_prof_sing_vend = 0;
@@ -117,43 +120,44 @@ $(document).ready(function(){
          }
        }
        console.log(venditore_corrente +':'+somma_prof_sing_vend);
-       data.push(somma_prof_sing_vend);
+       array.push(somma_prof_sing_vend);
+
       }
-      console.log(data);
+      console.log(array);
     },
     'error':function(){
       alert(errore);
     }
   })
 
-//
-//   var ctx = document.getElementById('myChart').getContext('2d');
-//   var myChart = new Chart(ctx, {
-//     type: 'pie',
-//     data: {
-//         labels: labels,
-//         datasets: [{
-//             label: '# of Votes',
-//             data: data,
-//             backgroundColor: [
-//                 'red',
-//                 'yellow',
-//                 'blue',
-//                 'green'
-//             ],
-//
-//             borderWidth: 1
-//         }]
-//     },
-//     options: {
-//         scales: {
-//             yAxes: [{
-//                 ticks: {
-//                     beginAtZero: true
-//                 }
-//             }]
-//         }
-//     }
-// });
+
+  var secondoChart = $('#myChart2');
+  var myChart2 = new Chart(secondoChart, {
+    type: 'pie',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: '# of Votes',
+            data: array,
+            backgroundColor: [
+                'red',
+                'yellow',
+                'blue',
+                'green'
+            ],
+
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
 
 });
