@@ -116,50 +116,54 @@ $(document).ready(function(){
 // ciclo dell'array iniziale
        for (var j = 0; j < data.length; j++) {
          var data_corrente = data[j];
-
+// per ogni vendita controllo de corrisponde al veditore corrente
+// se si sommo
          if(data_corrente.salesman == venditore_corrente){
            somma_prof_sing_vend += data_corrente.amount;
          }
        }
-       console.log(venditore_corrente +':'+somma_prof_sing_vend);
+// faccio il push delle somme profitti per ogni veditore
        array.push(somma_prof_sing_vend);
 
       }
-      console.log(array);
+
+      create_pie(labels, array);
     },
     'error':function(){
       alert(errore);
     }
   })
 
+  function create_pie(labels, array){
+    var secondoChart = document.getElementById('myChart2').getContext('2d');
+    var myChart2 = new Chart(secondoChart, {
+      type: 'pie',
+      data: {
+          labels: labels,
+          datasets: [{
+              label: '# of Votes',
+              data: array,
+              backgroundColor: [
+                  'red',
+                  'yellow',
+                  'blue',
+                  'green'
+              ],
 
-  var secondoChart = $('#myChart2');
-  var myChart2 = new Chart(secondoChart, {
-    type: 'pie',
-    data: {
-        labels: labels,
-        datasets: [{
-            label: '# of Votes',
-            data: array,
-            backgroundColor: [
-                'red',
-                'yellow',
-                'blue',
-                'green'
-            ],
+              borderWidth: 1
+          }]
+      },
+      options: {
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  }
+              }]
+          }
+      }
+    });
+  };
 
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
-        }
-    }
-});
 
 });

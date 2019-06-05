@@ -3,7 +3,16 @@
   border: 0;
   box-sizing: border-box;
 }
-.container1{
-  width: 600px;
+.container1,
+.container2{
+  width: 400px;
   height: auto;
+  display: inline-block;
+}
+.container1{
+  margin-left: 150px;
+}
+.container2{
+  float: right;
+  margin-right: 150px;
 }
