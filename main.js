@@ -107,11 +107,13 @@ $(document).ready(function(){
         }
         // var guadagni = data[i].amount;
       }
-
+// ciclo sull'array dei 4 venditori
       for (var i = 0; i < labels.length; i++) {
+// variabile d'appoggio che identifica il venditore ciclato nel momento
         var venditore_corrente = labels[i];
+// variabile per andare a sommare i guadagni del venditore ciclato
         var somma_prof_sing_vend = 0;
-
+// ciclo dell'array iniziale
        for (var j = 0; j < data.length; j++) {
          var data_corrente = data[j];
 
