@@ -9,11 +9,10 @@
 
 
 $(document).ready(function(){
+
   var url_base = 'http://157.230.17.132:4017/sales';
-  // var chiavi=[];
-  // var valori=[];
-// creo oggetto con all'inteno i mesi a 0 per poi dagli
-// la somma dei ricavi per ogni mese
+
+// oggetto contenente i mesi del primo grafico
   var mesi = {
     1:0,
     2:0,
@@ -28,6 +27,11 @@ $(document).ready(function(){
     11:0,
     12:0
   };
+
+// array per il secondo grafico
+  var labels = [];
+  var array = [];
+
 // chiamata ajax per i ricavi mensili
   $.ajax({
     'url':url_base,
@@ -47,59 +51,8 @@ $(document).ready(function(){
         }
 
       }
-      // create_graph(chiavi, valori);
-      // var keys_months = Object.keys(mesi);
-      // var values = Object.values(mesi);
-      // chiavi.push(keys_months);
-      // valori.push(values);
-// richiamo la funzione con le chiavi e i valori come argomento
-      create_graph(Object.keys(mesi), Object.values(mesi));
-    },
-    'error':function(){
-      alert(errore);
-    }
-  })
-// funzione che mi disegna il grafico
-  function create_graph(chiavi, valori){
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-          labels:chiavi,
-          datasets: [{
-              label: 'Vendite totali mensili',
-              data: valori,
-              backgroundColor: [
-                  'rgba(255, 99, 132, 0.2)'
-              ],
-              borderColor: [
-                  'rgba(255, 99, 132, 1)'
-              ],
-              borderWidth: 1
-          }]
-      },
-      options: {
-          scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero: true
-                  }
-              }]
-          }
-      }
-  });
-  }
-  var labels = [];
-  var array = [];
 
-  $.ajax({
-    'url':url_base,
-    'method':'GET',
-    'success':function(data){
-
-
-
-
+// manipolazione dati per il secondo grafico
       for (var i = 0; i < data.length; i++) {
         var venditori = data[i].salesman;
         if(!labels.includes(venditori)){
@@ -126,14 +79,36 @@ $(document).ready(function(){
        array.push(somma_prof_sing_vend);
 
       }
-
+      create_graph(Object.keys(mesi), Object.values(mesi));
       create_pie(labels, array);
     },
     'error':function(){
       alert(errore);
     }
   })
+// funzione che mi disegna il primo grafico
+  function create_graph(chiavi, valori){
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels:chiavi,
+          datasets: [{
+              label: 'Vendite totali mensili',
+              data: valori,
+              backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)'
+              ],
+              borderColor: [
+                  'rgba(255, 99, 132, 1)'
+              ],
+              borderWidth: 1
+          }]
+      }
+  });
+  }
 
+// funzione che mi disegna il secondo grafico
   function create_pie(labels, array){
     var secondoChart = document.getElementById('myChart2').getContext('2d');
     var myChart2 = new Chart(secondoChart, {
@@ -152,18 +127,31 @@ $(document).ready(function(){
 
               borderWidth: 1
           }]
-      },
-      options: {
-          scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero: true
-                  }
-              }]
-          }
       }
     });
   };
+  // chiamata ajax per inserimento nuove vendite
+  $('#but_inserimento').click(function(){
 
+    var venditore_selezionato = $('.sel_venditori').val();
+    var mese_selezionato = $('.sel_mesi_anno').val();
+    var importo_inserito = $('#input_inserimento').val();
+  })
+  $.ajax({
+    'url':url_base,
+    'method':'POST',
+    'data':{
+      'salesman':venditore_selezionato,
+      'date': mese_selezionato,
+      'amount':importo_inserito
+    },
+    'success':function(data){
+      stampaLista();
+      // $('.list').append('<div>'+ data.text +'</div>');
+    },
+    'error':function(){
+      alert(errore);
+    }
+  })
 
 });
