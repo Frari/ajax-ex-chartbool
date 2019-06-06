@@ -12,28 +12,29 @@ $(document).ready(function(){
 
   var url_base = 'http://157.230.17.132:4017/sales';
 
-// oggetto contenente i mesi del primo grafico
-  var mesi = {
-    1:0,
-    2:0,
-    3:0,
-    4:0,
-    5:0,
-    6:0,
-    7:0,
-    8:0,
-    9:0,
-    10:0,
-    11:0,
-    12:0
-  };
 
-// array per il secondo grafico
-  var labels = [];
-  var array = [];
 
-  stampaGrafici(url_base, mesi, labels, array);
-  function stampaGrafici(url_base, mesi, labels, array){
+  stampaGrafici(url_base);
+  function stampaGrafici(url_base){
+    // oggetto contenente i mesi del primo grafico
+      var mesi = {
+        1:0,
+        2:0,
+        3:0,
+        4:0,
+        5:0,
+        6:0,
+        7:0,
+        8:0,
+        9:0,
+        10:0,
+        11:0,
+        12:0
+      };
+
+    // array per il secondo grafico
+      var labels = [];
+      var array = [];
     // chiamata ajax per i ricavi mensili
       $.ajax({
         'url':url_base,
@@ -144,7 +145,7 @@ $(document).ready(function(){
     });
   };
   // chiamata ajax per inserimento nuove vendite
-  $(document).on('click','#but_inserimento',function(){
+  $('#but_inserimento').click(function(){
 
     var venditore_selezionato = $('.sel_venditori').val();
     var mese_selezionato = $('.sel_mesi_anno').val();
@@ -164,7 +165,7 @@ $(document).ready(function(){
       }),
       'contentType':'application/json',
       'success':function(data){
-        stampaGrafici(url_base, mesi, labels, array);
+        stampaGrafici(url_base);
       },
       'error':function(){
         alert(errore);
