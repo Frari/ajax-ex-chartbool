@@ -90,6 +90,7 @@ $(document).ready(function(){
           for (var i = 0; i < Object.keys(mesi).length; i++) {
             $('.sel_mesi_anno').append('<option>'+Object.keys(mesi)[i]+'</option>')
           }
+          
           create_graph(Object.keys(mesi), Object.values(mesi));
           create_pie(labels, array);
         },
@@ -152,9 +153,6 @@ $(document).ready(function(){
     var importo_inserito = $('#input_inserimento').val();
     var mese_moment = '01/'+moment(mese_selezionato, 'M').format('MM')+'/2017';
 
-    console.log(venditore_selezionato);
-    console.log(mese_moment);
-    console.log(importo_inserito);
     $.ajax({
       'url':url_base,
       'method':'POST',
@@ -166,6 +164,11 @@ $(document).ready(function(){
       'contentType':'application/json',
       'success':function(data){
         stampaGrafici(url_base);
+
+            $('.sel_venditori').val('');
+            $('.sel_mesi_anno').val('');
+            $('#input_inserimento').val('');
+
       },
       'error':function(){
         alert(errore);
