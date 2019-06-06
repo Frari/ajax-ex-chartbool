@@ -35,6 +35,9 @@ $(document).ready(function(){
     // array per il secondo grafico
       var labels = [];
       var array = [];
+
+      var trimestri_guadagni = [];
+      var trimestri = [];
     // chiamata ajax per i ricavi mensili
       $.ajax({
         'url':url_base,
@@ -43,7 +46,7 @@ $(document).ready(function(){
 
           for (var i = 0; i < data.length; i++) {
     // creo una variabile nella quale do il formato delle date utilizzando
-    // monet e pendo solo i mesi delle varie date
+    // momenet e pendo solo i mesi delle varie date
             var mese = moment(data[i].date, 'DD/MM/YYYY').format('M');
     // ciclo for in con il quale sommo e assegno i profitti ai vari
     // mesi dell'oggetto 'mesi'.
@@ -82,17 +85,35 @@ $(document).ready(function(){
            array.push(somma_prof_sing_vend);
 
           }
+          // resetto la select venditori
+          $('.sel_venditori').html('');
     // ciclo l'array labels per popolare la selection dei venditori
           for (var i = 0; i < labels.length; i++) {
             $('.sel_venditori').append('<option>'+labels[i]+'</option>')
           }
+          // resetto la select mesi dell'anno
+          $('.sel_mesi_anno').html('');
     // ciclo le chiavi dell'array mesi per popolare la selection dei mesi
           for (var i = 0; i < Object.keys(mesi).length; i++) {
             $('.sel_mesi_anno').append('<option>'+Object.keys(mesi)[i]+'</option>')
           }
-          
+          for (var i = 0; i < 1; i++) {
+            var trim1 = (Object.values(mesi)[0] + Object.values(mesi)[1] + Object.values(mesi)[2]);
+            var trim2 = (Object.values(mesi)[3] + Object.values(mesi)[4] + Object.values(mesi)[5]);
+            var trim3 = (Object.values(mesi)[6] + Object.values(mesi)[7] + Object.values(mesi)[8]);
+            var trim4 = (Object.values(mesi)[9] + Object.values(mesi)[10] + Object.values(mesi)[11]);
+            trimestri_guadagni.push(trim1, trim2, trim3, trim4);
+          }
+          console.log(trimestri_guadagni);
+          for (var i = 0; i <data.length; i++) {
+            var quarto = moment(data[i].date, 'DD/MM/YYYY').quarter();
+            if(!trimestri.includes(quarto)){
+              trimestri.push(quarto);
+            }
+          }
           create_graph(Object.keys(mesi), Object.values(mesi));
           create_pie(labels, array);
+          create_bar(trimestri, trimestri_guadagni)
         },
         'error':function(){
           alert(errore);
@@ -153,28 +174,53 @@ $(document).ready(function(){
     var importo_inserito = $('#input_inserimento').val();
     var mese_moment = '01/'+moment(mese_selezionato, 'M').format('MM')+'/2017';
 
-    $.ajax({
-      'url':url_base,
-      'method':'POST',
-      'data': JSON.stringify({
-        'salesman':venditore_selezionato,
-        'date': mese_moment,
-        'amount':parseInt(importo_inserito)
-      }),
-      'contentType':'application/json',
-      'success':function(data){
-        stampaGrafici(url_base);
+    if(venditore_selezionato.length != 0 && mese_selezionato.length != 0 && !isNaN(importo_inserito) && importo_inserito > 0 && importo_inserito.length != 0){
+      $.ajax({
+        'url':url_base,
+        'method':'POST',
+        'data': JSON.stringify({
+          'salesman':venditore_selezionato,
+          'date': mese_moment,
+          'amount':parseInt(importo_inserito)
+        }),
+        'contentType':'application/json',
+        'success':function(data){
+          stampaGrafici(url_base);
 
-            $('.sel_venditori').val('');
-            $('.sel_mesi_anno').val('');
-            $('#input_inserimento').val('');
+          $('.sel_venditori').val('');
+          $('.sel_mesi_anno').val('');
+          $('#input_inserimento').val('');
 
-      },
-      'error':function(){
-        alert(errore);
-      }
-    })
+        },
+        'error':function(){
+          alert(errore);
+        }
+      })
+    }else{
+      alert('inserire i dati correttamente')
+    }
+
   })
+  // funzione che mi disegna il terzo schema
+  function create_bar(trimestri, trimestri_guadagni){
+    var terzoChart = document.getElementById('myChart3').getContext('2d');
+    var myChart3 = new Chart(terzoChart, {
+      type: 'bar',
+      data: {
+          labels: trimestri,
+          datasets: [{
+              label: 'profitti per quadrimestre',
+              data: trimestri_guadagni,
+              backgroundColor: [
+                  'red',
+                  'yellow',
+                  'blue',
+                  'green'
+              ],
 
-
+              borderWidth: 1
+          }]
+      }
+    });
+  };
 });
